@@ -6,7 +6,11 @@ import {UsersModule} from "./modules/users/users.module";
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true}), UsersModule, AuthModule],
+  imports: [
+    MongooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true}),
+    UsersModule,
+    AuthModule
+  ],
   controllers: [AppController],
   providers: [],
 })
