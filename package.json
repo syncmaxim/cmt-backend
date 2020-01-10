@@ -22,11 +22,11 @@
   "dependencies": {
     "@nestjs/common": "^6.8.0",
     "@nestjs/core": "^6.8.0",
-    "@nestjs/jwt": "^6.1.1",
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/platform-express": "^6.8.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",

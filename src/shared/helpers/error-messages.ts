@@ -1,0 +1,10 @@
+export default {
+  token: {
+    INVALID_TOKEN: 'THE TOKEN IS NOT VALID',
+    NO_TOKEN: 'THE TOKEN WAS NOT PROVIDED'
+  },
+  authorization: {
+    PASS_NOT_MATCH: 'PASSWORD DOESN\'T MATCH',
+    NO_USER: 'THE USER WITH THIS ADDRESS WAS NOT FOUND'
+  }
+}
