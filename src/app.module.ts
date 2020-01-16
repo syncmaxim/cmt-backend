@@ -4,12 +4,14 @@ import 'dotenv/config';
 import { AppController } from './app.controller';
 import {UsersModule} from "./modules/users/users.module";
 import { AuthModule } from './modules/auth/auth.module';
+import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true}),
+    MongooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}),
     UsersModule,
-    AuthModule
+    AuthModule,
+    EventsModule
   ],
   controllers: [AppController],
   providers: [],
