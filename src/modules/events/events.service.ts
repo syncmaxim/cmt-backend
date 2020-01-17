@@ -28,4 +28,8 @@ export class EventsService {
   async delete(id: string): Promise<EventInterface> {
     return this.eventModel.findOneAndDelete({_id: id});
   }
+
+  async deleteAll(): Promise<any> {
+    return this.eventModel.deleteMany({});
+  }
 }

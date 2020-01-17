@@ -32,4 +32,11 @@ export class EventsController {
   deleteEvent(@Param('id') id: string): Promise<EventInterface> {
     return this.eventsService.delete(id)
   }
+
+  // TODO: add token for delete all or other permission
+
+  @Delete('delete/all')
+  deleteAllEvents(): Promise<EventInterface> {
+    return this.eventsService.deleteAll()
+  }
 }
