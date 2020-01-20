@@ -17,7 +17,7 @@ export class EventsService {
   }
 
   async create(event: CreateEventDto): Promise<EventInterface> {
-    const newEvent: EventInterface = new this.eventModel(event);
+    const newEvent = new this.eventModel(event);
     return await newEvent.save();
   }
 

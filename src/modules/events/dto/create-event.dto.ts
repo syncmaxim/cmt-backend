@@ -5,4 +5,10 @@ export class CreateEventDto {
   readonly place: string;
   readonly address: string;
   readonly description: string;
+  readonly speakers: {
+    readonly fullName: string;
+    readonly presentationTitle: string;
+    readonly from: string;
+    readonly company: string;
+  }
 }

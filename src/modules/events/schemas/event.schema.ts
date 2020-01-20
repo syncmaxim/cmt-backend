@@ -6,5 +6,13 @@ export const EventSchema = new mongoose.Schema({
   end: Date,
   place: String,
   address: String,
-  description: String
+  description: String,
+  speakers: {
+    type: [{
+      fullName: String,
+      presentationTitle: String,
+      from: String,
+      company: String
+    }]
+  }
 }, { versionKey: false });
