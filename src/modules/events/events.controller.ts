@@ -20,6 +20,7 @@ export class EventsController {
 
   @Post()
   createEvent(@Body() createEventDto: CreateEventDto): Promise<EventInterface> {
+    console.log(createEventDto);
     return this.eventsService.create(createEventDto)
   }
 

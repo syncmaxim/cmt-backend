@@ -7,4 +7,12 @@ export interface EventInterface extends Document {
   place: string;
   address: string;
   description: string;
+  speakers: SpeakersInterface[]
+}
+
+export interface SpeakersInterface {
+  fullName: string;
+  presentationTitle: string;
+  from: string;
+  company: string;
 }
