@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { EventInterface } from "./interfaces/event.interface";
-import { CreateEventDto } from "./dto/create-event.dto";
+import { IEvent } from "./types/event.interface";
 import { EventsService } from "./events.service";
 
 @Controller('api/events')
@@ -9,35 +8,34 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  getEvents(): Promise<EventInterface[]> {
+  getEvents(): Promise<IEvent[]> {
     return this.eventsService.findAll()
   }
 
   @Get(':id')
-  getEvent(@Param('id') id: string): Promise<EventInterface> {
+  getEvent(@Param('id') id: string): Promise<IEvent> {
     return this.eventsService.findOneById(id)
   }
 
   @Post()
-  createEvent(@Body() createEventDto: CreateEventDto): Promise<EventInterface> {
-    console.log(createEventDto);
-    return this.eventsService.create(createEventDto)
+  createEvent(@Body() event: IEvent): Promise<IEvent> {
+    return this.eventsService.create(event)
   }
 
   @Put(':id')
-  updateEvent(@Param('id') id: string, @Body() createEventDto: CreateEventDto): Promise<EventInterface> {
-    return this.eventsService.update(id, createEventDto)
+  updateEvent(@Param('id') id: string, @Body() event: IEvent): Promise<IEvent> {
+    return this.eventsService.update(id, event)
   }
 
   @Delete(':id')
-  deleteEvent(@Param('id') id: string): Promise<EventInterface> {
+  deleteEvent(@Param('id') id: string): Promise<IEvent> {
     return this.eventsService.delete(id)
   }
 
   // TODO: add token for delete all or other permission
 
   @Delete('delete/all')
-  deleteAllEvents(): Promise<EventInterface> {
+  deleteAllEvents(): Promise<IEvent> {
     return this.eventsService.deleteAll()
   }
 }
