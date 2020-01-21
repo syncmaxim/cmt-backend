@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {Model } from "mongoose";
-import { UserInterface } from "./interfaces/user.interface";
+import { IUser } from "./types/user.interface";
 
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel('User') private readonly userModel: Model<UserInterface>) {}
+    constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
 
-    async findAll(): Promise<UserInterface[]> {
+    async findAll(): Promise<IUser[]> {
         return this.userModel.find();
     }
 
-    async findOneById(id: string): Promise<UserInterface> {
+    async findOneById(id: string): Promise<IUser> {
         return this.userModel.findOne({_id: id});
     }
 
-    async findOneByEmail(email: string): Promise<UserInterface> {
+    async findOneByEmail(email: string): Promise<IUser> {
         return this.userModel.findOne({email: email});
     }
 
