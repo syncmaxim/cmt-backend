@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypegooseModule } from "nestjs-typegoose";
 import 'dotenv/config';
 import { AppController } from './app.controller';
 import {UsersModule} from "./modules/users/users.module";
@@ -8,7 +8,7 @@ import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}),
+    TypegooseModule.forRoot(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}),
     UsersModule,
     AuthModule,
     EventsModule

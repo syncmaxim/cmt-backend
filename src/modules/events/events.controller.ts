@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { IEvent } from "./types/event.interface";
+import { IEvent } from "../../shared/types/event.interface";
 import { EventsService } from "./events.service";
 
 @Controller('api/events')

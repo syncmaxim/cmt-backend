@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, UseGuards } from "@nestjs/common";
 import {UsersService} from "./users.service";
-import {IUser} from "./types/user.interface";
+import {IUser} from "../../shared/types/user.interface";
 import { AuthGuard } from "../auth/auth.guard";
 
 @Controller('api/users')
