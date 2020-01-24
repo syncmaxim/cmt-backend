@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from "@nestjs/mongoose";
 import { IEvent } from "../../shared/types/event.interface";
 import { ReturnModelType } from "@typegoose/typegoose";
-import { Event } from "./schemas/event.model";
+import { Event } from "./models/event.model";
 
 @Injectable()
 export class EventsService {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { IUser } from "../../shared/types/user.interface";
-import { User } from "./schemas/user.model";
 import { ReturnModelType } from "@typegoose/typegoose";
+import { IUser } from "../../shared/types/user.interface";
+import { User } from "./models/user.model";
 
 
 @Injectable()
@@ -19,6 +19,23 @@ export class UsersService {
 
     async findOneByEmail(email: string): Promise<IUser> {
         return this.userModel.findOne({email: email});
+    }
+
+    async create(user: IUser): Promise<IUser> {
+        const newUser = new this.userModel(user);
+        return await newUser.save();
+    }
+
+    async update(id: string, event: IUser): Promise<IUser> {
+        return this.userModel.findOneAndUpdate({_id: id}, event, {new: true});
+    }
+
+    async delete(id: string): Promise<IUser> {
+        return this.userModel.findOneAndDelete({_id: id});
+    }
+
+    async deleteAll(): Promise<any> {
+        return this.userModel.deleteMany({});
     }
 
 }
