@@ -8,9 +8,6 @@ export class Speaker {
   public presentationTitle!: string;
 
   @prop()
-  public from!: string;
-
-  @prop()
   public company: string;
 }
 

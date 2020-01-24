@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { TypegooseModule } from "nestjs-typegoose";
-import { Event } from "./schemas/event.model";
+import { Event } from "./models/event.model";
 
 @Module({
   imports: [

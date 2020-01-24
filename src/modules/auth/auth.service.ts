@@ -7,7 +7,7 @@ import { IUser } from "../../shared/types/user.interface";
 import { UsersService } from "../users/users.service";
 import { ILogged } from "../../shared/types/logged.interface";
 import errorMessage from '../../shared/helpers/error-messages';
-import { User } from "../users/schemas/user.model";
+import { User } from "../users/models/user.model";
 import { ISignUp } from "../../shared/types/sign_up.interface";
 import { ISignIn } from "../../shared/types/sign_in.interface";
 import { emailValidate } from "../../shared/helpers/emailValidate";

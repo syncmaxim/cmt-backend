@@ -13,6 +13,5 @@ export interface IEvent extends Document {
 export interface ISpeaker {
   fullName: string;
   presentationTitle: string;
-  from: string;
   company: string;
 }
