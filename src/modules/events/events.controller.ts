@@ -30,6 +30,12 @@ export class EventsController {
     return this.eventsService.update(id, event)
   }
 
+  @Put('/attend/:id')
+  @UseGuards(AuthGuard)
+  attendEvent(@Param('id') id: string, @Req() request: Request): Promise<IEvent> {
+    return this.eventsService.updateAttenders(id, request.header('Authorization'))
+  }
+
   @Delete(':id')
   deleteEvent(@Param('id') id: string): Promise<IEvent> {
     return this.eventsService.delete(id)

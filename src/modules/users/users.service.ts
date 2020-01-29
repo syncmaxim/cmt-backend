@@ -42,6 +42,6 @@ export class UsersService {
                         id: eventId
                     }
             }
-        });
+        }, {new: true});
     }
 }

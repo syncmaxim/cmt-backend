@@ -1,5 +1,10 @@
 import { arrayProp, modelOptions, prop } from "@typegoose/typegoose";
 
+export class Attender {
+  @prop({required: true})
+  public id: string;
+}
+
 export class Speaker {
   @prop({required: true})
   public fullName: string;
@@ -33,6 +38,9 @@ export class Event {
 
   @arrayProp({items: Speaker})
   public speakers: Speaker[];
+
+  @arrayProp({items: Attender, _id: false})
+  public attenders: Attender[];
 
   @prop()
   public userId: string;

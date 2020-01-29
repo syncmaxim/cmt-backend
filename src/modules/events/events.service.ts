@@ -29,6 +29,18 @@ export class EventsService {
     return this.eventModel.findOneAndUpdate({_id: id}, event, {new: true});
   }
 
+  async updateAttenders(id: string, token): Promise<IEvent> {
+    let user = await jwt.decode(token.split('Bearer ')[1]);
+    return this.eventModel.findOneAndUpdate({_id: id}, {
+      $push: {
+        attenders:
+            {
+              id: user.id
+            }
+      }
+    }, {new: true});
+  }
+
   async delete(id: string): Promise<IEvent> {
     return this.eventModel.findOneAndDelete({_id: id});
   }
