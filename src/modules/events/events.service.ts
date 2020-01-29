@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from "@nestjs/mongoose";
-import { IEvent } from "../../shared/types/event.interface";
-import { ReturnModelType } from "@typegoose/typegoose";
-import { Event } from "./models/event.model";
+import { InjectModel } from '@nestjs/mongoose';
+import { ReturnModelType } from '@typegoose/typegoose';
+import * as jwt from 'jsonwebtoken';
+import { IEvent } from '../../shared/types/event.interface';
+import { Event } from './models/event.model';
+import {UsersService} from '../users/users.service';
 
 @Injectable()
 export class EventsService {
-  constructor(@InjectModel('Event') private readonly eventModel: ReturnModelType<typeof Event>) {}
+  constructor(@InjectModel('Event') private readonly eventModel: ReturnModelType<typeof Event>, private usersService: UsersService) {}
 
   async findAll(): Promise<IEvent[]> {
     return this.eventModel.find();
@@ -16,8 +18,10 @@ export class EventsService {
     return this.eventModel.findOne({_id: id});
   }
 
-  async create(event: IEvent): Promise<IEvent> {
-    const newEvent = new this.eventModel(event);
+  async create(event: IEvent, token): Promise<IEvent> {
+    let user = await jwt.decode(token.split('Bearer ')[1]);
+    const newEvent = new this.eventModel({...event, userId: user.id});
+    await this.usersService.updateEvents(user.id, newEvent._id);
     return await newEvent.save();
   }
 

@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards} from "@nestjs/common";
 import { IEvent } from "../../shared/types/event.interface";
 import { EventsService } from "./events.service";
 import { AuthGuard } from "../auth/auth.guard";
+import { Request } from 'express';
 
 @Controller('api/events')
 export class EventsController {
@@ -20,8 +21,8 @@ export class EventsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  createEvent(@Body() event: IEvent): Promise<IEvent> {
-    return this.eventsService.create(event)
+  createEvent(@Body() event: IEvent, @Req() request: Request): Promise<IEvent> {
+    return this.eventsService.create(event, request.header('Authorization'))
   }
 
   @Put(':id')
