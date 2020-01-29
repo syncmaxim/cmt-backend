@@ -32,11 +32,4 @@ export class UsersController {
     deleteUser(@Param('id') id: string): Promise<IUser> {
         return this.usersService.delete(id)
     }
-
-    // TODO: add token for delete all or other permission
-
-    @Delete('delete/all')
-    deleteAllUsers(): Promise<IUser> {
-        return this.usersService.deleteAll()
-    }
 }

@@ -34,8 +34,14 @@ export class UsersService {
         return this.userModel.findOneAndDelete({_id: id});
     }
 
-    async deleteAll(): Promise<any> {
-        return this.userModel.deleteMany({});
+    async updateEvents(id: string, eventId: string): Promise<IUser> {
+        return this.userModel.findOneAndUpdate({_id: id}, {
+            $push: {
+                events:
+                    {
+                        id: eventId
+                    }
+            }
+        });
     }
-
 }
