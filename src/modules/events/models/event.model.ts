@@ -1,20 +1,6 @@
-import { arrayProp, modelOptions, prop } from "@typegoose/typegoose";
-
-export class Attender {
-  @prop({required: true})
-  public id: string;
-}
-
-export class Speaker {
-  @prop({required: true})
-  public fullName: string;
-
-  @prop({required: true})
-  public presentationTitle: string;
-
-  @prop({required: true})
-  public company: string;
-}
+import { arrayProp, modelOptions, prop } from '@typegoose/typegoose';
+import { Speaker } from './speaker.model';
+import { Attender } from './attender.model';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
@@ -45,4 +31,3 @@ export class Event {
   @prop()
   public userId: string;
 }
-

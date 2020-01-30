@@ -1,16 +1,16 @@
-import { HttpException, Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { ReturnModelType } from "@typegoose/typegoose";
-import { IUser } from "../../shared/types/user.interface";
-import { UsersService } from "../users/users.service";
-import { ILogged } from "../../shared/types/logged.interface";
+import { ReturnModelType } from '@typegoose/typegoose';
+import { IUser } from '../../shared/types/user.interface';
+import { UsersService } from '../users/users.service';
+import { ILogged } from '../../shared/types/logged.interface';
 import errorMessage from '../../shared/helpers/error-messages';
-import { User } from "../users/models/user.model";
-import { ISignUp } from "../../shared/types/sign_up.interface";
-import { ISignIn } from "../../shared/types/sign_in.interface";
-import { emailValidate } from "../../shared/helpers/emailValidate";
+import { User } from '../users/models/user.model';
+import { ISignUp } from '../../shared/types/sign_up.interface';
+import { ISignIn } from '../../shared/types/sign_in.interface';
+import { emailValidate } from '../../shared/helpers/emailValidate';
 
 @Injectable()
 export class AuthService {
@@ -54,7 +54,7 @@ export class AuthService {
         throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 401);
       }
 
-      const token: string = await jwt.sign({id: searchedUser.id, email: searchedUser.email}, process.env.SECRET_KEY);
-      return { id: searchedUser.id, token};
+    const token: string = await jwt.sign({id: searchedUser.id, email: searchedUser.email}, process.env.SECRET_KEY);
+    return { id: searchedUser.id, token};
   }
 }

@@ -19,7 +19,7 @@ export class EventsService {
   }
 
   async create(event: IEvent, token): Promise<IEvent> {
-    let user = await jwt.decode(token.split('Bearer ')[1]);
+    const user = await jwt.decode(token.split('Bearer ')[1]);
     const newEvent = new this.eventModel({...event, userId: user.id});
     await this.usersService.updateEvents(user.id, newEvent._id);
     return await newEvent.save();
@@ -30,22 +30,20 @@ export class EventsService {
   }
 
   async updateAttenders(id: string, token): Promise<IEvent> {
-    let user = await jwt.decode(token.split('Bearer ')[1]);
-    return this.eventModel.findOneAndUpdate({_id: id}, {
+    const user = await jwt.decode(token.split('Bearer ')[1]);
+    const updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
       $push: {
         attenders:
             {
-              id: user.id
-            }
-      }
+              id: user.id,
+            },
+      },
     }, {new: true});
+    await this.usersService.updateAttends(user.id, updatedEvent._id);
+    return updatedEvent;
   }
 
   async delete(id: string): Promise<IEvent> {
     return this.eventModel.findOneAndDelete({_id: id});
-  }
-
-  async deleteAll(): Promise<any> {
-    return this.eventModel.deleteMany({});
   }
 }
