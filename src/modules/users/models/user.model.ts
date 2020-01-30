@@ -1,6 +1,4 @@
-import {arrayProp, modelOptions, prop} from '@typegoose/typegoose';
-import { UserEvent } from './user-event.model';
-import { EventToAttend } from './event-to-attend';
+import {modelOptions, mongoose, prop} from '@typegoose/typegoose';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class User {
@@ -10,9 +8,9 @@ export class User {
   @prop({required: true})
   public password: string;
 
-  @arrayProp({items: UserEvent, _id: false})
-  public events: UserEvent[];
+  @prop()
+  public events: [];
 
-  @arrayProp({items: EventToAttend, _id: false})
-  public eventsToAttend: EventToAttend[];
+  @prop()
+  public eventsToAttend: [];
 }

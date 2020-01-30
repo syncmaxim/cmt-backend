@@ -1,6 +1,5 @@
-import { arrayProp, modelOptions, prop } from '@typegoose/typegoose';
+import {arrayProp, modelOptions, mongoose, prop} from '@typegoose/typegoose';
 import { Speaker } from './speaker.model';
-import { Attender } from './attender.model';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
@@ -25,8 +24,8 @@ export class Event {
   @arrayProp({items: Speaker})
   public speakers: Speaker[];
 
-  @arrayProp({items: Attender, _id: false})
-  public attenders: Attender[];
+  @prop()
+  public attenders: [];
 
   @prop()
   public userId: string;

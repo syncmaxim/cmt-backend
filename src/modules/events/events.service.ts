@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ReturnModelType } from '@typegoose/typegoose';
+import {mongoose, ReturnModelType} from '@typegoose/typegoose';
 import * as jwt from 'jsonwebtoken';
 import { IEvent } from '../../shared/types/event.interface';
 import { Event } from './models/event.model';
@@ -29,17 +29,24 @@ export class EventsService {
     return this.eventModel.findOneAndUpdate({_id: id}, event, {new: true});
   }
 
-  async updateAttenders(id: string, token): Promise<IEvent> {
+  async updateAttenders(id: string, token: string, status: boolean): Promise<IEvent> {
     const user = await jwt.decode(token.split('Bearer ')[1]);
-    const updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
-      $push: {
-        attenders:
-            {
-              id: user.id,
-            },
-      },
-    }, {new: true});
-    await this.usersService.updateAttends(user.id, updatedEvent._id);
+    let updatedEvent;
+    if (status) {
+      updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
+        $push: {
+          attenders: new mongoose.Types.ObjectId(user.id),
+        },
+      }, {new: true});
+      await this.usersService.updateAttends(user.id, updatedEvent._id, status);
+    } else {
+      updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
+        $pull: {
+          attenders: new mongoose.Types.ObjectId(user.id),
+        },
+      }, {new: true});
+      await this.usersService.updateAttends(user.id, updatedEvent._id, status);
+    }
     return updatedEvent;
   }
 
