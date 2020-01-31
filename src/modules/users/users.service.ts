@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ReturnModelType } from '@typegoose/typegoose';
+import * as jwt from 'jsonwebtoken';
 import { IUser } from '../../shared/types/user.interface';
 import { User } from './models/user.model';
 
@@ -10,6 +11,11 @@ export class UsersService {
 
     async findAll(): Promise<IUser[]> {
         return this.userModel.find();
+    }
+
+    async getUserInfo(token): Promise<{id: string, email: string }> {
+        const data = await jwt.decode(token.split('Bearer ')[1]);
+        return {id: data.id, email: data.email };
     }
 
     async findOneById(id: string): Promise<IUser> {

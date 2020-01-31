@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Param, UseGuards, Body } from '@nestjs/common';
+import {Controller, Get, Post, Put, Delete, Param, UseGuards, Body, Req} from '@nestjs/common';
 import {UsersService} from './users.service';
 import {IUser} from '../../shared/types/user.interface';
 import { AuthGuard } from '../auth/auth.guard';
+import {Request} from 'express';
 
 @Controller('api/users')
 @UseGuards(AuthGuard)
@@ -11,6 +12,12 @@ export class UsersController {
     @Get()
     getUsers(): Promise<IUser[]> {
         return this.usersService.findAll();
+    }
+
+    @Get('/user-info')
+    @UseGuards(AuthGuard)
+    getUserInfo(@Req() request: Request): Promise<{id: string, email: string }> {
+        return this.usersService.getUserInfo(request.header('Authorization'));
     }
 
     @Get(':id')
