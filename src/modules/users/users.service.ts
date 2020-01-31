@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ReturnModelType } from "@typegoose/typegoose";
-import { IUser } from "../../shared/types/user.interface";
-import { User } from "./models/user.model";
-
+import { ReturnModelType } from '@typegoose/typegoose';
+import { IUser } from '../../shared/types/user.interface';
+import { User } from './models/user.model';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +17,7 @@ export class UsersService {
     }
 
     async findOneByEmail(email: string): Promise<IUser> {
-        return this.userModel.findOne({email: email});
+        return this.userModel.findOne({email});
     }
 
     async create(user: IUser): Promise<IUser> {
@@ -37,11 +36,24 @@ export class UsersService {
     async updateEvents(id: string, eventId: string): Promise<IUser> {
         return this.userModel.findOneAndUpdate({_id: id}, {
             $push: {
-                events:
-                    {
-                        id: eventId
-                    }
-            }
-        });
+                events: eventId,
+            },
+        }, {new: true});
+    }
+
+    async updateAttends(id: string, eventId: string, status: boolean): Promise<IUser> {
+        if (status) {
+            return this.userModel.findOneAndUpdate({_id: id}, {
+                $push: {
+                    eventsToAttend: eventId,
+                },
+            }, {new: true});
+        } else {
+            return this.userModel.findOneAndUpdate({_id: id}, {
+                $pull: {
+                    eventsToAttend: eventId,
+                },
+            }, {new: true});
+        }
     }
 }

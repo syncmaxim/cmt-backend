@@ -1,15 +1,5 @@
-import { arrayProp, modelOptions, prop } from "@typegoose/typegoose";
-
-export class Speaker {
-  @prop({required: true})
-  public fullName: string;
-
-  @prop({required: true})
-  public presentationTitle: string;
-
-  @prop({required: true})
-  public company: string;
-}
+import {arrayProp, modelOptions, mongoose, prop} from '@typegoose/typegoose';
+import { Speaker } from './speaker.model';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
@@ -35,6 +25,8 @@ export class Event {
   public speakers: Speaker[];
 
   @prop()
+  public attenders: [];
+
+  @prop()
   public userId: string;
 }
-
