@@ -3,9 +3,9 @@ import {UsersService} from './users.service';
 import {IUser} from '../../shared/types/user.interface';
 import { AuthGuard } from '../auth/auth.guard';
 import {Request} from 'express';
+import {IChangePassword} from '../../shared/types/change-password.interface';
 
 @Controller('api/users')
-@UseGuards(AuthGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
@@ -14,7 +14,7 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-    @Get('/user-info')
+    @Get('user-info')
     @UseGuards(AuthGuard)
     getUserInfo(@Req() request: Request): Promise<{id: string, email: string }> {
         return this.usersService.getUserInfo(request.header('Authorization'));
@@ -33,6 +33,20 @@ export class UsersController {
     @Put(':id')
     updateUser(@Param('id') id: string, @Body() user: IUser): Promise<IUser> {
         return this.usersService.update(id, user);
+    }
+
+    @Put('change-email')
+    @UseGuards(AuthGuard)
+    changeUserEmail(@Req() request: Request, @Body() email: {email: string}): Promise<IUser> {
+        return this.usersService.updateEmail(request.header('Authorization'), email);
+    }
+
+    @Put('change-password')
+    @UseGuards(AuthGuard)
+    changeUserPassword(@Req() request: Request, @Body() passwords: IChangePassword): Promise<IUser> {
+        console.log(request);
+        console.log(passwords);
+        return this.usersService.updatePassword(request.header('Authorization'), passwords);
     }
 
     @Delete(':id')
