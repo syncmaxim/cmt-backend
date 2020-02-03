@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { mongoose, ReturnModelType } from '@typegoose/typegoose';
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../../shared/types/user.interface';
 import { User } from './models/user.model';
@@ -42,7 +42,7 @@ export class UsersService {
     async updateEvents(id: string, eventId: string): Promise<IUser> {
         return this.userModel.findOneAndUpdate({_id: id}, {
             $push: {
-                events: eventId,
+                events: new mongoose.Types.ObjectId(eventId),
             },
         }, {new: true});
     }
@@ -51,13 +51,13 @@ export class UsersService {
         if (status) {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $push: {
-                    eventsToAttend: eventId,
+                    eventsToAttend: new mongoose.Types.ObjectId(eventId),
                 },
             }, {new: true});
         } else {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $pull: {
-                    eventsToAttend: eventId,
+                    eventsToAttend: new mongoose.Types.ObjectId(eventId),
                 },
             }, {new: true});
         }

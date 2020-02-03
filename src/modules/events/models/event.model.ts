@@ -1,5 +1,6 @@
-import {arrayProp, modelOptions, mongoose, prop} from '@typegoose/typegoose';
+import {arrayProp, modelOptions, prop} from '@typegoose/typegoose';
 import { Speaker } from './speaker.model';
+import * as mongoose from 'mongoose';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
@@ -28,5 +29,5 @@ export class Event {
   public attenders: [];
 
   @prop()
-  public userId: string;
+  public userId: mongoose.Schema.Types.ObjectId;
 }
