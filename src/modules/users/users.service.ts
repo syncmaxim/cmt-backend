@@ -13,7 +13,7 @@ import {signToken} from '../../shared/helpers/signToken';
 export class UsersService {
     constructor(@InjectModel('User') private readonly userModel: ReturnModelType<typeof User>) {}
 
-    async findAll(): Promise<IUser[]> {
+    async findAll(): Promise<User[]> {
         return this.userModel.find();
     }
 
@@ -22,20 +22,20 @@ export class UsersService {
         return {id: data.id, email: data.email };
     }
 
-    async findOneById(id: string): Promise<IUser> {
+    async findOneById(id: string): Promise<User> {
         return this.userModel.findOne({_id: id});
     }
 
-    async findOneByEmail(email: string): Promise<IUser> {
+    async findOneByEmail(email: string): Promise<User> {
         return this.userModel.findOne({email});
     }
 
-    async create(user: IUser): Promise<IUser> {
+    async create(user: IUser): Promise<User> {
         const newUser = new this.userModel(user);
         return await newUser.save();
     }
 
-    async update(id: string, event: IUser): Promise<IUser> {
+    async update(id: string, event: IUser): Promise<User> {
         return this.userModel.findOneAndUpdate({_id: id}, event, {new: true});
     }
 
@@ -81,11 +81,11 @@ export class UsersService {
         }
     }
 
-    async delete(id: string): Promise<IUser> {
+    async delete(id: string): Promise<User> {
         return this.userModel.findOneAndDelete({_id: id});
     }
 
-    async updateEvents(id: string, eventId: string): Promise<IUser> {
+    async updateEvents(id: string, eventId: string): Promise<User> {
         return this.userModel.findOneAndUpdate({_id: id}, {
             $push: {
                 events: new mongoose.Types.ObjectId(eventId),
@@ -93,7 +93,7 @@ export class UsersService {
         }, {new: true});
     }
 
-    async updateAttends(id: string, eventId: string, status: boolean): Promise<IUser> {
+    async updateAttends(id: string, eventId: string, status: boolean): Promise<User> {
         if (status) {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $push: {

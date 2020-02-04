@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   async login(user: ISignIn): Promise<ILogged> {
-    let searchedUser: IUser;
+    let searchedUser: User;
 
     emailValidate(user.email) ? searchedUser = await this.usersService.findOneByEmail(user.email) : searchedUser = undefined;
 
@@ -55,7 +55,7 @@ export class AuthService {
         throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 401);
       }
 
-    const token = await signToken({id: searchedUser.id, email: searchedUser.email});
-    return { id: searchedUser.id, token};
+    const token = await signToken({id: searchedUser._id, email: searchedUser.email});
+    return { id: searchedUser._id, token};
   }
 }
