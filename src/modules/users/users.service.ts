@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {HttpException, Injectable} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { mongoose, ReturnModelType } from '@typegoose/typegoose';
+import * as bcrypt from 'bcryptjs';
 import { IUser } from '../../shared/types/user.interface';
 import { User } from './models/user.model';
+import {decodeToken} from '../../shared/helpers/decodeToken';
+import {IChangePassword} from '../../shared/types/change-password.interface';
+import errorMessage from '../../shared/helpers/error-messages';
+import {signToken} from '../../shared/helpers/signToken';
 
 @Injectable()
 export class UsersService {
@@ -10,6 +15,11 @@ export class UsersService {
 
     async findAll(): Promise<IUser[]> {
         return this.userModel.find();
+    }
+
+    async getUserInfo(token): Promise<{id: string, email: string }> {
+        const data = await decodeToken(token);
+        return {id: data.id, email: data.email };
     }
 
     async findOneById(id: string): Promise<IUser> {
@@ -29,6 +39,48 @@ export class UsersService {
         return this.userModel.findOneAndUpdate({_id: id}, event, {new: true});
     }
 
+    async updateEmail(token: string, email: {email: string}): Promise<{status: boolean, message: string, token?: string}> {
+        const data = await decodeToken(token);
+        const searchedUser = await this.userModel.findOne({email: email.email});
+
+        if (searchedUser !== null) {
+            throw new HttpException(errorMessage.email.REPEAT_INCORRECT, 400);
+        }
+
+        try {
+            const updatedUser = await this.userModel.findOneAndUpdate({_id: data.id}, email, {new: true});
+            const token = await signToken({id: updatedUser.id, email: updatedUser.email});
+            return { status: true, message: 'Email successfully changed', token }
+        } catch (e) {
+            return { status: false, message: e }
+        }
+
+    }
+
+    async updatePassword(token: string, passwords: IChangePassword): Promise<{status: boolean, message: string}> {
+
+        if (passwords.newPassword !== passwords.confirmNewPassword) {
+            throw new HttpException(errorMessage.password.REPEAT_INCORRECT, 400);
+        }
+
+        const data = await decodeToken(token);
+        const searchedUser = await this.userModel.findOne({_id: data.id});
+        const isPasswordValid: boolean = await bcrypt.compare(passwords.currentPassword, searchedUser.password);
+
+        if (!isPasswordValid) {
+            throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 400);
+        }
+
+        const hash: string = await bcrypt.hash(passwords.newPassword, +process.env.ROUNDS);
+
+        try {
+            await this.userModel.findOneAndUpdate({_id: data.id}, { password: hash });
+            return { status: true, message: 'Password successfully changed' }
+        } catch (e) {
+            return { status: false, message: e }
+        }
+    }
+
     async delete(id: string): Promise<IUser> {
         return this.userModel.findOneAndDelete({_id: id});
     }
@@ -36,7 +88,7 @@ export class UsersService {
     async updateEvents(id: string, eventId: string): Promise<IUser> {
         return this.userModel.findOneAndUpdate({_id: id}, {
             $push: {
-                events: eventId,
+                events: new mongoose.Types.ObjectId(eventId),
             },
         }, {new: true});
     }
@@ -45,13 +97,13 @@ export class UsersService {
         if (status) {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $push: {
-                    eventsToAttend: eventId,
+                    eventsToAttend: new mongoose.Types.ObjectId(eventId),
                 },
             }, {new: true});
         } else {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $pull: {
-                    eventsToAttend: eventId,
+                    eventsToAttend: new mongoose.Types.ObjectId(eventId),
                 },
             }, {new: true});
         }

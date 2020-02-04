@@ -20,7 +20,7 @@ export class EventsService {
 
   async create(event: IEvent, token): Promise<IEvent> {
     const user = await jwt.decode(token.split('Bearer ')[1]);
-    const newEvent = new this.eventModel({...event, userId: user.id});
+    const newEvent = new this.eventModel({...event, userId: new mongoose.Types.ObjectId(user.id)});
     await this.usersService.updateEvents(user.id, newEvent._id);
     return await newEvent.save();
   }
