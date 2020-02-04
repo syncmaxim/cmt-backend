@@ -12,4 +12,7 @@ export default {
   password: {
     REPEAT_INCORRECT: 'NEW PASSWORD DOESN\'T MATCH REPEATED PASSWORD',
   },
+  email: {
+    REPEAT_INCORRECT: 'USER WITH SUCH EMAIL ALREADY EXISTS',
+  },
 };

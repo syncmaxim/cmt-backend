@@ -33,13 +33,13 @@ export class UsersController {
 
     @Put('change-email')
     @UseGuards(AuthGuard)
-    changeUserEmail(@Req() request: Request, @Body() email: {email: string}): Promise<IUser> {
+    changeUserEmail(@Req() request: Request, @Body() email: {email: string}): Promise<{status: boolean, message: string, token?: string}> {
         return this.usersService.updateEmail(request.header('Authorization'), email);
     }
 
     @Put('change-password')
     @UseGuards(AuthGuard)
-    changeUserPassword(@Req() request: Request, @Body() passwords: IChangePassword): Promise<IUser> {
+    changeUserPassword(@Req() request: Request, @Body() passwords: IChangePassword): Promise<{status: boolean, message: string}> {
         return this.usersService.updatePassword(request.header('Authorization'), passwords);
     }
 

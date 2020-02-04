@@ -7,6 +7,7 @@ import { User } from './models/user.model';
 import {decodeToken} from '../../shared/helpers/decodeToken';
 import {IChangePassword} from '../../shared/types/change-password.interface';
 import errorMessage from '../../shared/helpers/error-messages';
+import {signToken} from '../../shared/helpers/signToken';
 
 @Injectable()
 export class UsersService {
@@ -38,12 +39,25 @@ export class UsersService {
         return this.userModel.findOneAndUpdate({_id: id}, event, {new: true});
     }
 
-    async updateEmail(token: string, email: {email: string}): Promise<IUser> {
+    async updateEmail(token: string, email: {email: string}): Promise<{status: boolean, message: string, token?: string}> {
         const data = await decodeToken(token);
-        return this.userModel.findOneAndUpdate({_id: data.id}, email, {new: true});
+        const searchedUser = await this.userModel.findOne({email: email.email});
+
+        if (searchedUser !== null) {
+            throw new HttpException(errorMessage.email.REPEAT_INCORRECT, 400);
+        }
+
+        try {
+            const updatedUser = await this.userModel.findOneAndUpdate({_id: data.id}, email, {new: true});
+            const token = await signToken({id: updatedUser.id, email: updatedUser.email});
+            return { status: true, message: 'Email successfully changed', token }
+        } catch (e) {
+            return { status: false, message: e }
+        }
+
     }
 
-    async updatePassword(token: string, passwords: IChangePassword): Promise<IUser> {
+    async updatePassword(token: string, passwords: IChangePassword): Promise<{status: boolean, message: string}> {
 
         if (passwords.newPassword !== passwords.confirmNewPassword) {
             throw new HttpException(errorMessage.password.REPEAT_INCORRECT, 400);
@@ -59,7 +73,12 @@ export class UsersService {
 
         const hash: string = await bcrypt.hash(passwords.newPassword, +process.env.ROUNDS);
 
-        return this.userModel.findOneAndUpdate({_id: data.id}, { password: hash }, {new: true});
+        try {
+            await this.userModel.findOneAndUpdate({_id: data.id}, { password: hash });
+            return { status: true, message: 'Password successfully changed' }
+        } catch (e) {
+            return { status: false, message: e }
+        }
     }
 
     async delete(id: string): Promise<IUser> {

@@ -11,6 +11,7 @@ import { User } from '../users/models/user.model';
 import { ISignUp } from '../../shared/types/sign_up.interface';
 import { ISignIn } from '../../shared/types/sign_in.interface';
 import { emailValidate } from '../../shared/helpers/emailValidate';
+import {signToken} from '../../shared/helpers/signToken';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
     const hash: string = await bcrypt.hash(user.password, +process.env.ROUNDS);
     const newUser = new this.userModel({...user, password: hash});
     const newUserData = await newUser.save();
-    const token: string = await jwt.sign({id: newUserData._id, email: newUserData.email}, process.env.SECRET_KEY);
+    const token = await signToken({id: newUserData._id, email: newUserData.email});
 
     return {id: newUserData._id, token};
   }
@@ -54,7 +55,7 @@ export class AuthService {
         throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 401);
       }
 
-    const token: string = await jwt.sign({id: searchedUser.id, email: searchedUser.email}, process.env.SECRET_KEY);
+    const token = await signToken({id: searchedUser.id, email: searchedUser.email});
     return { id: searchedUser.id, token};
   }
 }
