@@ -30,10 +30,6 @@ export class UsersController {
         return this.usersService.create(user);
     }
 
-    @Put(':id')
-    updateUser(@Param('id') id: string, @Body() user: IUser): Promise<IUser> {
-        return this.usersService.update(id, user);
-    }
 
     @Put('change-email')
     @UseGuards(AuthGuard)
@@ -44,9 +40,12 @@ export class UsersController {
     @Put('change-password')
     @UseGuards(AuthGuard)
     changeUserPassword(@Req() request: Request, @Body() passwords: IChangePassword): Promise<IUser> {
-        console.log(request);
-        console.log(passwords);
         return this.usersService.updatePassword(request.header('Authorization'), passwords);
+    }
+
+    @Put(':id')
+    updateUser(@Param('id') id: string, @Body() user: IUser): Promise<IUser> {
+        return this.usersService.update(id, user);
     }
 
     @Delete(':id')

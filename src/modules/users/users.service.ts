@@ -44,25 +44,20 @@ export class UsersService {
     }
 
     async updatePassword(token: string, passwords: IChangePassword): Promise<IUser> {
-        console.log(passwords);
 
-        if (passwords.newPassword !== passwords.repeatNewPassword) {
-            throw new HttpException(errorMessage.password.REPEAT_INCORRECT, 400)
+        if (passwords.newPassword !== passwords.confirmNewPassword) {
+            throw new HttpException(errorMessage.password.REPEAT_INCORRECT, 400);
         }
 
         const data = await decodeToken(token);
-        console.log(data);
         const searchedUser = await this.userModel.findOne({_id: data.id});
         const isPasswordValid: boolean = await bcrypt.compare(passwords.currentPassword, searchedUser.password);
-        console.log(isPasswordValid);
 
         if (!isPasswordValid) {
             throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 400);
         }
 
         const hash: string = await bcrypt.hash(passwords.newPassword, +process.env.ROUNDS);
-
-        console.log(hash);
 
         return this.userModel.findOneAndUpdate({_id: data.id}, { password: hash }, {new: true});
     }
