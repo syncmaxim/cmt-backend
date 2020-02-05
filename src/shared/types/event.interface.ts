@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
-import * as mongoose from "mongoose";
 import {IUser} from './user.interface';
+import {mongoose} from '@typegoose/typegoose';
 
 export interface IEvent extends Document {
   title: string;

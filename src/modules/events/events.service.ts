@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {mongoose, ReturnModelType} from '@typegoose/typegoose';
+import {DocumentType, mongoose, ReturnModelType} from '@typegoose/typegoose';
 import * as jwt from 'jsonwebtoken';
 import { IEvent } from '../../shared/types/event.interface';
 import { Event } from './models/event.model';
 import {UsersService} from '../users/users.service';
-
-// TODO: REMOVE ALL ANY
 
 @Injectable()
 export class EventsService {
@@ -17,21 +15,13 @@ export class EventsService {
   }
 
   async findOneById(id: string): Promise<Event> {
-    const test = await this.eventModel.findOne({_id: id});
-    test.populate({
-      path: 'attenders',
-      model: 'User',
-    }).execPopulate().then(response => {
-      console.log(response);
-    });
-
     return this.eventModel.findOne({_id: id});
   }
 
   async create(event: IEvent, token): Promise<Event> {
     const user = await jwt.decode(token.split('Bearer ')[1]);
     const newEvent = new this.eventModel({...event, userId: new mongoose.Types.ObjectId(user.id)});
-    await this.usersService.updateEvents(user.id, newEvent._id);
+    await this.usersService.updateEvents(user._id, newEvent._id);
     return await newEvent.save();
   }
 
@@ -41,22 +31,22 @@ export class EventsService {
 
   async updateAttenders(id: string, token: string, status: boolean): Promise<Event> {
     const user = await jwt.decode(token.split('Bearer ')[1]);
-    let updatedEvent;
+    let updatedEvent: DocumentType<Event>;
     if (status) {
       updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
         $push: {
-          attenders: new mongoose.Types.ObjectId(user.id),
+          attenders: new mongoose.Types.ObjectId(user._id),
         },
       }, {new: true});
-      await this.usersService.updateAttends(user.id, updatedEvent._id, status);
     } else {
       updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
         $pull: {
-          attenders: new mongoose.Types.ObjectId(user.id),
+          attenders: new mongoose.Types.ObjectId(user._id),
         },
       }, {new: true});
-      await this.usersService.updateAttends(user.id, updatedEvent._id, status);
     }
+    console.log(typeof user._id, typeof updatedEvent._id, typeof status); // updated event _id - is object ???
+    await this.usersService.updateAttends(user._id, updatedEvent._id, status);
     return updatedEvent;
   }
 

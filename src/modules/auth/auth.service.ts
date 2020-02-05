@@ -1,10 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { IUser } from '../../shared/types/user.interface';
-import { UsersService } from '../users/users.service';
 import { ILogged } from '../../shared/types/logged.interface';
 import errorMessage from '../../shared/helpers/error-messages';
 import { User } from '../users/models/user.model';
@@ -17,8 +14,7 @@ import {signToken} from '../../shared/helpers/signToken';
 export class AuthService {
 
   constructor(
-    @InjectModel('User') private readonly userModel: ReturnModelType<typeof User>,
-    private readonly usersService: UsersService) {
+    @InjectModel('User') private readonly userModel: ReturnModelType<typeof User>) {
   }
 
   async register(user: ISignUp): Promise<ILogged> {
@@ -26,7 +22,7 @@ export class AuthService {
       throw new HttpException(errorMessage.authorization.ERROR_EMAIL_VALIDATION, 401);
     }
 
-    const searchedUser = await this.usersService.findOneByEmail(user.email);
+    const searchedUser = await this.userModel.findOne({email: user.email}, { events: 0, eventsToAttend: 0 });
 
     if (searchedUser) {
       throw new HttpException(errorMessage.authorization.USER_EXISTS, 401);
@@ -37,15 +33,13 @@ export class AuthService {
     const newUserData = await newUser.save();
     const token = await signToken({_id: newUserData._id, email: newUserData.email});
 
-    return {id: newUserData._id, token};
+    return {_id: newUserData._id, token};
   }
 
   async login(user: ISignIn): Promise<ILogged> {
-    let searchedUser: User;
+    const searchedUser = await this.userModel.findOne({email: user.email}, { events: 0, eventsToAttend: 0 });
 
-    emailValidate(user.email) ? searchedUser = await this.usersService.findOneByEmail(user.email) : searchedUser = undefined;
-
-    if (!searchedUser) {
+    if (!emailValidate(user.email) && searchedUser === null) {
       throw new HttpException(errorMessage.authorization.NO_USER, 401);
     }
 
@@ -56,6 +50,6 @@ export class AuthService {
       }
 
     const token = await signToken({_id: searchedUser._id, email: searchedUser.email});
-    return { id: searchedUser._id, token};
+    return {_id: searchedUser._id, token};
   }
 }
