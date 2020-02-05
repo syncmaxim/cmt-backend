@@ -6,6 +6,7 @@ import {Ref} from 'typegoose';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
+
   @prop({required: true})
   public title: string;
 
@@ -28,8 +29,8 @@ export class Event {
   public speakers: Speaker[];
 
   @prop({ref: 'User'})
-  public attenders: Ref<User>[];
-// , refType: mongoose.Schema.Types.ObjectId
+  public attenders: Ref<User>;
+
   @prop()
   public userId: mongoose.Schema.Types.ObjectId;
 }

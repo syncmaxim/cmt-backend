@@ -1,5 +1,4 @@
 import {modelOptions, prop} from '@typegoose/typegoose';
-import * as mongoose from "mongoose";
 import {Ref} from 'typegoose';
 import {Event} from '../../events/models/event.model';
 
@@ -7,7 +6,6 @@ import {Event} from '../../events/models/event.model';
 export class User {
 
   @prop()
-  // public _id: mongoose.Schema.Types.ObjectId;
   public _id: string;
 
   @prop({required: true})
@@ -17,10 +15,8 @@ export class User {
   public password: string;
 
   @prop({ref: 'Event'})
-  public events: Ref<Event>[];
-  //, refType: mongoose.Schema.Types.ObjectId
+  public events: Ref<Event>;
 
   @prop({ref: 'Event'})
-  public eventsToAttend: Ref<Event>[];
-//  refType: mongoose.Schema.Types.ObjectId
+  public eventsToAttend: Ref<Event>;
 }

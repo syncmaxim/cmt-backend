@@ -35,7 +35,7 @@ export class AuthService {
     const hash: string = await bcrypt.hash(user.password, +process.env.ROUNDS);
     const newUser = new this.userModel({...user, password: hash});
     const newUserData = await newUser.save();
-    const token = await signToken({id: newUserData._id, email: newUserData.email});
+    const token = await signToken({_id: newUserData._id, email: newUserData.email});
 
     return {id: newUserData._id, token};
   }
@@ -55,7 +55,7 @@ export class AuthService {
         throw new HttpException(errorMessage.authorization.PASS_NOT_MATCH, 401);
       }
 
-    const token = await signToken({id: searchedUser._id, email: searchedUser.email});
+    const token = await signToken({_id: searchedUser._id, email: searchedUser.email});
     return { id: searchedUser._id, token};
   }
 }

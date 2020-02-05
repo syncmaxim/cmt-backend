@@ -17,9 +17,9 @@ export class UsersService {
         return this.userModel.find();
     }
 
-    async getUserInfo(token): Promise<{id: string, email: string }> {
+    async getUserInfo(token): Promise<{_id: string, email: string }> {
         const data = await decodeToken(token);
-        return {id: data.id, email: data.email };
+        return {_id: data.id, email: data.email };
     }
 
     async findOneById(id: string): Promise<User> {
@@ -27,7 +27,7 @@ export class UsersService {
     }
 
     async findOneByEmail(email: string): Promise<User> {
-        return this.userModel.findOne({email});
+        return this.userModel.findOne({email}, { events: 0, eventsToAttend: 0 });
     }
 
     async create(user: IUser): Promise<User> {
@@ -49,10 +49,10 @@ export class UsersService {
 
         try {
             const updatedUser = await this.userModel.findOneAndUpdate({_id: data.id}, email, {new: true});
-            const token = await signToken({id: updatedUser.id, email: updatedUser.email});
-            return { status: true, message: 'Email successfully changed', token }
+            const updToken = await signToken({_id: updatedUser.id, email: updatedUser.email});
+            return { status: true, message: 'Email successfully changed', token: updToken };
         } catch (e) {
-            return { status: false, message: e }
+            return { status: false, message: e };
         }
 
     }
@@ -75,9 +75,9 @@ export class UsersService {
 
         try {
             await this.userModel.findOneAndUpdate({_id: data.id}, { password: hash });
-            return { status: true, message: 'Password successfully changed' }
+            return { status: true, message: 'Password successfully changed' };
         } catch (e) {
-            return { status: false, message: e }
+            return { status: false, message: e };
         }
     }
 

@@ -17,12 +17,12 @@ export class UsersController {
 
     @Get('user-info')
     @UseGuards(AuthGuard)
-    getUserInfo(@Req() request: Request): Promise<{id: string, email: string }> {
+    getUserInfo(@Req() request: Request): Promise<{_id: string, email: string }> {
         return this.usersService.getUserInfo(request.header('Authorization'));
     }
 
     @Get(':id')
-    getUser(@Param() id: string): Promise<User> {
+    getUser(@Param('id') id: string): Promise<User> {
         return this.usersService.findOneById(id);
     }
 

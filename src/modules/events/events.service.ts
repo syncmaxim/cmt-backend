@@ -17,9 +17,14 @@ export class EventsService {
   }
 
   async findOneById(id: string): Promise<Event> {
-    this.eventModel.findOne({_id: id}).populate('attenders').exec((err, res) => {
-      console.log(res);
+    const test = await this.eventModel.findOne({_id: id});
+    test.populate({
+      path: 'attenders',
+      model: 'User',
+    }).execPopulate().then(response => {
+      console.log(response);
     });
+
     return this.eventModel.findOne({_id: id});
   }
 
