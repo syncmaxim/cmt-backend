@@ -15,7 +15,11 @@ export class EventsService {
   }
 
   async findOneById(id: string): Promise<Event> {
-    return this.eventModel.findOne({_id: id});
+    return this.eventModel.findOne({_id: id}).populate({
+      path: 'attenders',
+      model: 'User',
+      select: 'email'
+    });
   }
 
   async create(event: IEvent, token): Promise<Event> {
@@ -37,13 +41,21 @@ export class EventsService {
         $push: {
           attenders: new mongoose.Types.ObjectId(user._id),
         },
-      }, {new: true});
+      }, {new: true}).populate({
+        path: 'attenders',
+        model: 'User',
+        select: 'email'
+      });
     } else {
       updatedEvent = await this.eventModel.findOneAndUpdate({_id: id}, {
         $pull: {
           attenders: new mongoose.Types.ObjectId(user._id),
         },
-      }, {new: true});
+      }, {new: true}).populate({
+        path: 'attenders',
+        model: 'User',
+        select: 'email'
+      });
     }
     await this.usersService.updateAttends(user._id, updatedEvent._id, status);
     return updatedEvent;

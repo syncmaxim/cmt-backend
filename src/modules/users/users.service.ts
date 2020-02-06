@@ -89,7 +89,7 @@ export class UsersService {
         }, {new: true});
     }
 
-    async updateAttends(id: string, eventId: string, status: boolean): Promise<User> { // TODO: DEBUG FOR UPDATING MODEL
+    async updateAttends(id: string, eventId: string, status: boolean): Promise<User> {
         if (status) {
             return this.userModel.findOneAndUpdate({_id: id}, {
                 $push: {
