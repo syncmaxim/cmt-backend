@@ -20,7 +20,7 @@ export class EventsService {
 
   async create(event: IEvent, token): Promise<Event> {
     const user = await jwt.decode(token.split('Bearer ')[1]);
-    const newEvent = new this.eventModel({...event, userId: new mongoose.Types.ObjectId(user.id)});
+    const newEvent = new this.eventModel({...event, userId: new mongoose.Types.ObjectId(user._id)});
     await this.usersService.updateEvents(user._id, newEvent._id);
     return await newEvent.save();
   }
@@ -45,7 +45,6 @@ export class EventsService {
         },
       }, {new: true});
     }
-    console.log(typeof user._id, typeof updatedEvent._id, typeof status); // updated event _id - is object ???
     await this.usersService.updateAttends(user._id, updatedEvent._id, status);
     return updatedEvent;
   }

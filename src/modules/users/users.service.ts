@@ -81,8 +81,8 @@ export class UsersService {
         return this.userModel.findOneAndDelete({_id: id});
     }
 
-    async updateEvents(_id: string, eventId: string): Promise<User> {
-        return this.userModel.findOneAndUpdate({_id}, {
+    async updateEvents(id: string, eventId: string): Promise<User> {
+        return this.userModel.findOneAndUpdate({_id: id}, {
             $push: {
                 events: new mongoose.Types.ObjectId(eventId),
             },

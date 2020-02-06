@@ -11,9 +11,9 @@ export class User {
   @prop({required: true})
   public password: string;
 
-  @arrayProp({itemsRef: 'Event'})
+  @prop({ref: 'Event'})
   public events: Ref<Event>[];
 
-  @arrayProp({itemsRef: 'Event'})
+  @prop({ref: 'Event'})
   public eventsToAttend: Ref<Event>[];
 }

@@ -27,7 +27,7 @@ export class Event {
   @arrayProp({items: Speaker})
   public speakers: Speaker[];
 
-  @arrayProp({itemsRef: 'User'})
+  @arrayProp({ref: 'User'})
   public attenders: Ref<User>[];
 
   @prop()
