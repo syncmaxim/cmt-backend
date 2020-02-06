@@ -1,4 +1,4 @@
 export interface ILogged {
-  id: string;
+  _id: string;
   token: string;
 }

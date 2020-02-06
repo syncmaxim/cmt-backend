@@ -1,4 +1,6 @@
 import { Document } from 'mongoose';
+import {IUser} from './user.interface';
+import {mongoose} from '@typegoose/typegoose';
 
 export interface IEvent extends Document {
   title: string;
@@ -7,7 +9,9 @@ export interface IEvent extends Document {
   place: string;
   address: string;
   description: string;
-  speakers: ISpeaker[]
+  speakers?: ISpeaker[];
+  attenders?: IUser[];
+  userId?: mongoose.Schema.Types.ObjectId;
 }
 
 export interface ISpeaker {

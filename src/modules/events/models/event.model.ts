@@ -1,9 +1,11 @@
-import {arrayProp, modelOptions, prop} from '@typegoose/typegoose';
+import {arrayProp, modelOptions, prop, mongoose} from '@typegoose/typegoose';
 import { Speaker } from './speaker.model';
-import * as mongoose from 'mongoose';
+import {User} from '../../users/models/user.model';
+import {Ref} from 'typegoose';
 
 @modelOptions({schemaOptions: { versionKey: false }})
 export class Event {
+
   @prop({required: true})
   public title: string;
 
@@ -25,8 +27,8 @@ export class Event {
   @arrayProp({items: Speaker})
   public speakers: Speaker[];
 
-  @prop()
-  public attenders: [];
+  @arrayProp({ref: 'User'})
+  public attenders: Ref<User>[];
 
   @prop()
   public userId: mongoose.Schema.Types.ObjectId;
